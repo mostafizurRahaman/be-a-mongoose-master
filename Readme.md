@@ -99,17 +99,22 @@ graph TD;
 
 # MongoDB Shell `Function` & `Operation` :
 
-|                     Function                     |              for use               |                                example                                |
-| :----------------------------------------------: | :--------------------------------: | :-------------------------------------------------------------------: |
-|                   ` show dbs`                    |         show all database          |                              `show dbs`                               |
-|                  `use database`                  |        create new or switch        |                         `use newDatabaseName`                         |
-|          `db.createCollection("name")`           |       create new collection        |                     `db.createCollection('test')`                     |
-|       `db.getCollection("collectionName")`       |           get Collection           |                      `db.getCollection('test')`                       |
-|               `db.collectionName`                |     get Collection another way     |                               `db.test`                               |
-|      `db.collectionName.insertOne(object)`       |        insert one documents        |               `db.test.insertOne({name: "next Level"})`               |
-| `db.collectionName.insertMany([object, object])` |        insert array of data        | `db.test.insertMany([{name: "next Level"}, {name: "Complete web "}])` |
-|         `db.collectionName.find(query)`          | find data from collection by query |                `db.test.find({name: "Complete Web"})`                 |
-|        `db.collectionName.findOne(query)`        |     find the first Occurrence      |               `db.test.findOne({name: "Complete Web"})`               |
+|                     Function                      |              for use               |                                                                       example                                                                        |
+| :-----------------------------------------------: | :--------------------------------: | :--------------------------------------------------------------------------------------------------------------------------------------------------: |
+|                    ` show dbs`                    |         show all database          |                                                                      `show dbs`                                                                      |
+|                  `use database`                   |        create new or switch        |                                                                `use newDatabaseName`                                                                 |
+|           `db.createCollection("name")`           |       create new collection        |                                                            `db.createCollection('test')`                                                             |
+| `db.collectionName.drop({writeConcern: {w: 1}})`  |          drop a document           |                                                  `db.another_testing.drop({writeConcern: {w: 1}})`                                                   |
+|       `db.getCollection("collectionName")`        |           get Collection           |                                                              `db.getCollection('test')`                                                              |
+|                `db.collectionName`                |     get Collection another way     |                                                                      `db.test`                                                                       |
+|       `db.collectionName.insertOne(object)`       |        insert one documents        |                                                      `db.test.insertOne({name: "next Level"})`                                                       |
+| `db.collectionName.insertMany([object, object])`  |        insert array of data        |                                        `db.test.insertMany([{name: "next Level"}, {name: "Complete web "}])`                                         |
+|          `db.collectionName.find(query)`          | find data from collection by query |                                                        `db.test.find({name: "Complete Web"})`                                                        |
+|        `db.collectionName.findOne(query)`         |     find the first Occurrence      |                                                      `db.test.findOne({name: "Complete Web"})`                                                       |
+| `db.collectionName.updateOne(query, updatedDoc)`  |         update an document         | `db.another_testing.updateOne({_id: ObjectId("6550655ec31abae6aaa3419a"), skills: {$elemMatch: {name: "C#"}}}, {$set: {'skills.$.level':"Expert"}})` |
+| `db.collectionName.updateMany(query, updatedDoc)` |       update many documents        |                      `db.another_testing.updateMany({ skills: {$elemMatch: {name: "C#"}}}, {$set: {'skills.$.level':"Entry"}})`                      |
+|       `db.collectionName.deleteOne(query)`        |        delete one documents        |                      `db.another_testing.deleteOne({ skills: {$elemMatch: {name: "C#"}}}, {$set: {'skills.$.level':"Entry"}})`                       |
+|       `db.collectionName.deleteMany(query)`       |       delete many documents        |                      `db.another_testing.deleteMany({ skills: {$elemMatch: {name: "C#"}}}, {$set: {'skills.$.level':"Entry"}})`                      |
 
 ## Projection or `Field Filtering` with MongoDB:
 
@@ -177,12 +182,50 @@ graph TD;
    |  `$nin`  | get data which not matched with array of data | `{<field>: {$nin: [value, value, value] }}` | `db.test.find({age: {$nin: [12, 20, 21, 24]}})` |
 
 -  ##### Logical Operator :
+
    | Operator |                                  why use                                   |                 syntax                  |                                                                                                             example                                                                                                              |
    | :------: | :------------------------------------------------------------------------: | :-------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
    |  `$and`  |                 return data if multiple condition is true                  |    `{$and: [exp, exp, exp... exp]}`     |                                       `db.test.find({$and: [{age : {$lt: 20} },{'skills.name' : "JAVASCRIPT"},{'skills.name' : "PYTHON"}]}).project({name: 1, age: 1, "skills.name": 1})`                                        |
    |  `$or`   |                   if any expression is true return data                    |     `{$or: [exp, exp, exp... exp]}`     |                                        `db.test.find({$or: [{age : {$lt: 20} },{'skills.name' : "JAVASCRIPT"},{'skills.name' : "PYTHON"}]}).project({name: 1, age: 1, "skills.name": 1})`                                        |
    |  `$not`  |                   if any expression is true return data                    | `{field:{$not: {operator expression}}}` |                                                                            `db.test.find({age: {$not: {$gte: 50}}}).sort({age: 1}).project({age: 1})`                                                                            |
    |  `$nor`  | selects the documents that fail all of the query expressions in the array. |    `{field:{$nor: [exp, exp, exp]}}`    | `db.test.find({$nor: [{age: {$in: [7,8,10,12,20,30,40,50,60]}}, {"skills.name": "JAVASCRIPT"}]}).project({age: 1, 'skills.name': 1}).sort({age: 1}) ` `db.test.find({age: {$not: {$gte: 50}}}).sort({age: 1}).project({age: 1})` |
+
+-  ##### `Element Query` Operator
+
+   | Operator  |              why use               |               syntax                |                   example                   |
+   | :-------: | :--------------------------------: | :---------------------------------: | :-----------------------------------------: |
+   | `$exists` |     check the is exist or not      | `{ field: { $exists: <boolean> } }` | `db.test.find({company: {$exists: true }})` |
+   |  `$type`  | get data if matched the filed type | `{ field: { $type: <BSON type> } }` | `db.test.find({company: {$type: 'null' }})` |
+
+-  ##### `Array Query` Operator:
+
+   |   Operator   |                                                   why use                                                   |                           syntax                           |                                             example                                              |
+   | :----------: | :---------------------------------------------------------------------------------------------------------: | :--------------------------------------------------------: | :----------------------------------------------------------------------------------------------: |
+   |   `$size`    |                          size operator return data if array length or size matched                          |            `{ field: { $size: numberValue } }`             |                `db.test.find({skills : {$size : 5}}).project({"skills.name":1})`                 |
+   |    `$all`    |  the `$all` operator returns documents which matched with all element we provide on array as `$all` value   |    `{ <field>: { $all: [ <value1> , <value2> ... ] } }`    | `db.test.find({interests: {$all: ['Gaming', "Reading", "Travelling"]}}).project({interests: 1})` |
+   | `$elemMatch` | `$elemMatch` operator helps us to get documents from array of object which matched with `elemMatched query` | `{ <field>: { $elemMatch: { <query1> , <query2> ... } } }` |  `db.test.find({education: {$elemMatch: {major: 'Art', year: 2003}}}).project({education : 1})`  |
+
+-  ##### `Update` Operator:
+
+   | Operator  |                                        why use                                        |                   syntax                    |                                               example                                               |
+   | :-------: | :-----------------------------------------------------------------------------------: | :-----------------------------------------: | :-------------------------------------------------------------------------------------------------: |
+   |  `$set`   | set operator replace the specific field value for primitive data and object type data | `{ $set: {<field>:value, <field>: value} }` | `db.test.updateOne({_id: ObjectId("6406ad63fc13ae5a40000065")}, {$set: {age: 20}}, {upsert: true})` |
+   | `$unset`  |                    `$unset` operator remove the specific property                     |         `{ $unset: {<field>: ""} }`         |        `db.test.updateOne({_id: ObjectId("6406ad63fc13ae5a40000065")}, {$unset: {age: 1}})`         |
+   |  `$inc`   |              `$inc` helps us to increment or decrement any number value               |     `{ $inc: {<field>: numberValue} }`      |         `db.test.updateOne({_id: ObjectId("6406ad63fc13ae5a40000065")}, {$inc: {age: -2}})`         |
+   |  `$mul`   |                          `$mul` used to multiply or division                          |     `{ $mul: {<field>: numberValue} }`      |        `db.test.updateOne({_id: ObjectId("6406ad63fc13ae5a40000065")}, {$mul: {age: 0.5}})`         |
+   | `$rename` |                       `$rename` helps us to rename any property                       |    `{ $rename: {<field>: numberValue} }`    |       `db.test.updateOne({_id: ObjectId("6406ad63fc13ae5a40000065")}, {$rename: {age: 0.5}})`       |
+
+-  ##### `Array Update` operator:
+   |  Operator   |                                                case                                                |                                                                                           why use                                                                                            |                                      syntax                                      |                                                            example                                                             |
+   | :---------: | :------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: | :------------------------------------------------------------------------------: | :----------------------------------------------------------------------------------------------------------------------------: |
+   | `$addToSet` |                                         `for normal value`                                         |                                                            `$addToSet` include new Data on array. And not include duplicate data                                                             |                   `{ $addToSet: { <field1>: <value1>, ... } }`                   |              `db.test.updateOne({_id: ObjectId("6406ad63fc13ae5a40000065")}, {$addToSet: {interests: 'Gaming'}})`              |
+   | `$addToSet` |                                        `for array of data`                                         | If the value is an array, `$addToSet` appends the whole array as a single element. If we want to include the each data as single item from an the provided array we can use` $each` modifier |                   `{ $addToSet: { <field1>: <value1>, ... } }`                   | ` db.test.updateOne({_id: ObjectId("6406ad63fc13ae5a40000065")}, {$addToSet: {interests: {$each: ['Reading', "Traveling"]}}})` |
+   |   `$push`   |                                         `for normal value`                                         |                                                                `$addToSet` include new Data on array and also duplicate data                                                                 |                     `{ $push: { <field1>: <value1>, ... } }`                     |              `db.test.updateOne({_id: ObjectId("6406ad63fc13ae5a40000065")}, {$addToSet: {interests: 'Gaming'}})`              |
+   |   `$push`   |                                        `for array of data`                                         | If the value is an array, `$addToSet` appends the whole array as a single element. If we want to include the each data as single item from an the provided array we can use` $each` modifier |                     `{ $push: { <field1>: <value1>, ... } }`                     | ` db.test.updateOne({_id: ObjectId("6406ad63fc13ae5a40000065")}, {$addToSet: {interests: {$each: ['Reading', "Traveling"]}}})` |
+   |   `$pop`    |                              `$pop` help remove an element from array                              |                                                             get `1` for remove last element, get `-1` remove this first element                                                              |                         `{ $pop: { <field1>: 1 or -1 }`                          |                   ` db.test.updateOne({_id: ObjectId("6406ad63fc13ae5a40000065")}, {$pop: {interests: 1}})`                    |
+   |   `$pull`   |                                `to remove an element from an array`                                |                                                                                                                                                                                              | `{$pull: {<field1>: 'item'}` or `{$pull: {<field> : {$in: ['item1', 'item2,]}}}` |              `db.test.updateOne({_id: ObjectId('6406ad63fc13ae5a40000068')}, {$pull: {interests: 'Gardening'}})`               |
+   | `$pullAll`  |                             `to remove array of element from an array`                             |                                                                                                                                                                                              |                                                                                  |        db.test.updateOne({\_id: ObjectId('6406ad63fc13ae5a40000068')}, {$pullAll: {interests: ["Writing", "Reading"]}})        |
+   |   `$each`   | The `$each` modifier is available for use with the `$addToSet` operator and the `$push` operator.` |                                                                                                                                                                                              |                                                                                  |        db.test.updateOne({\_id: ObjectId('6406ad63fc13ae5a40000068')}, {$pullAll: {interests: ["Writing", "Reading"]}})        |
 
 ## `Implicit` & `Explicit` `$and` in MongoDB.
 
@@ -267,7 +310,29 @@ db.test
    ```
 
 -  ### Implicit `$or`: we can use `implicit` for same filed with `$in` operator.
+
    -  `$in` operator implicitly worked like `$or` operator.
+
    ```js
    db.test.find({ age: { $in: [10, 20, 30, 40] } });
+   ```
+
+-  ## `Nested Array of Object` update with `($)` `(positional)` Operator: `$` operator update the firstOccurrence from an array
+   -  We can update any normal object with `$set`Operator.
+   -  When we need to update property element which is an array of object.
+   -  The element stored on any position.
+   -  To find out the element we can use `property.$.propertyName` : value
+   -  Example:
+   ```js
+   db.another_testing.updateOne(
+      {
+         _id: ObjectId("6550655ec31abae6aaa3419a"),
+         skills: { $elemMatch: { name: "C#" } },
+      },
+      {
+         $set: {
+            "skills.$.level": "Expert",
+         },
+      }
+   );
    ```
