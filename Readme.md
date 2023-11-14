@@ -425,3 +425,31 @@
       },
    ]);
    ```
+- ### `$bucket` stage : 
+   - `$bucket` stage used for group also. 
+   - `$bucket` stage get `4` parameters like  `groupBy`, `boundaries`, `default`, `output`. 
+   - `groupBy` : get the field name with `$field`. 
+   - `boundaries`: provide array of data.
+   - `default`: others data which not included on boundaries.
+   - `output`: we can  provide here output.
+   - syntax: 
+   ```ts
+      db.collection.aggregate([
+         {
+            $bucket: {
+               groupBy: '$field'
+               boundaries: [options], 
+               default: "default option", 
+               output: {
+                  //count
+                  // sum
+                  // avg
+                  // push 
+                  // max 
+                  // min
+               }
+            }
+         }
+      ])
+   ```
+   
