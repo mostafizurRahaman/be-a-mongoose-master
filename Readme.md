@@ -105,6 +105,35 @@
    ]);
    ```
 
+   -  `Rename` fields in Project:
+
+      -  syntax:
+
+      ```ts
+      {
+         $project: {
+            newPropertyName: "$fieldName";
+         }
+      }
+      ```
+
+      -  Example:
+
+      ```ts
+         {
+
+            $project: {
+                  totalSalary: 1,
+                  minSalary: 1,
+                  maxSalary: 1,
+                  averageSalary: "$avgSalary", // rename the fields
+                  minMaxSalaryRange : {$subtract: ["$maxSalary","$minSalary"]}, // subtract in project
+
+            }
+         }
+
+      ```
+
 -  #### `$addFields` : Adds new fields to documents.
 
    -  But not modify the existing documents :
@@ -328,6 +357,70 @@
             maxSalary: 1,
             averageSalary: "$avgSalary", // rename the fields
             minMaxSalaryRange: { $subtract: ["$maxSalary", "$minSalary"] }, // substract in project
+         },
+      },
+   ]);
+   ```
+
+-  #### `$unwind`: `$unwind` method helps us to separate every `array` elements.
+
+   -  and `reuse` the array element for every documents:
+   -  syntax:
+
+   ```ts
+   {
+      $unwind: "$arrayFieldName";
+   }
+   ```
+
+   -  Suppose we have an documents like this:
+
+   ```json
+         [
+           {
+               "_id" : ObjectId("65534b7c6f0724dab1759586"),
+               "friends" : [ "Rakib", "Ratul", "Roman" ]
+            }
+         ]
+   ```
+
+   -  After using `$unwind` method: the documents separated for every array item
+      but others data can't change.
+
+   ```ts
+      /* 1 createdAt:11/14/2023, 4:27:08 PM*/
+         {
+            "_id" : ObjectId("65534b7c6f0724dab1759586"),
+            "friends" : "Rakib"
+         },
+
+         /* 2 createdAt:11/14/2023, 4:27:08 PM*/
+         {
+            "_id" : ObjectId("65534b7c6f0724dab1759586"),
+            "friends" : "Ratul"
+         },
+
+         /* 3 createdAt:11/14/2023, 4:27:08 PM*/
+         {
+            "_id" : ObjectId("65534b7c6f0724dab1759586"),
+            "friends" : "Roman"
+         }
+   ```
+
+   -  Example:
+
+   ```ts
+   db.test.aggregate([
+      // stage -> 1:
+      { $unwind: "$friends" },
+      // stage -> 2:
+      { $unwind: "$interests" },
+      // stage -> 3:
+      {
+         $group: {
+            _id: "$age",
+            agePerFriends: { $push: "$friends" },
+            agePerInterests: { $push: "$interests" },
          },
       },
    ]);
