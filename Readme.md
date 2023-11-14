@@ -520,4 +520,23 @@
    ```
 
 -  ### `$lookup`:
-   -
+   -  By using `$lookup` we can get any field value from a `foreignCollection`.
+   - `$lookup` get `4` parameter; 
+   -  `from`: collection name from which we can get data
+   - `localField`: currentCollection reference field.
+   - `foreignFiled`: 'foreign Collection reference field'
+   - `as` : the property name, which contain the value in output.
+   
+   - syntax: 
+   ```ts 
+      db.collection.aggregate([
+         {
+            $lookup: {
+               from: 'other collection name'
+               localField: '$fieldName', 
+               foreignField: '$foreignFieldName', 
+               as: 'anyName'
+            }
+         }
+      ])
+   ```
