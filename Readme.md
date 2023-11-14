@@ -425,31 +425,99 @@
       },
    ]);
    ```
-- ### `$bucket` stage : 
-   - `$bucket` stage used for group also. 
-   - `$bucket` stage get `4` parameters like  `groupBy`, `boundaries`, `default`, `output`. 
-   - `groupBy` : get the field name with `$field`. 
-   - `boundaries`: provide array of data.
-   - `default`: others data which not included on boundaries.
-   - `output`: we can  provide here output.
-   - syntax: 
+
+-  ### `$bucket` stage :
+   -  `$bucket` stage used for group also.
+   -  `$bucket` stage get `4` parameters like `groupBy`, `boundaries`,
+      `default`, `output`.
+   -  `groupBy` : get the field name with `$field`.
+   -  `boundaries`: provide array of data.
+   -  `default`: others data which not included on boundaries.
+   -  `output`: we can provide here output.
+   -  syntax:
    ```ts
-      db.collection.aggregate([
-         {
-            $bucket: {
-               groupBy: '$field'
-               boundaries: [options], 
-               default: "default option", 
-               output: {
-                  //count
-                  // sum
-                  // avg
-                  // push 
-                  // max 
-                  // min
+   db.collection.aggregate([
+      {
+         $bucket: {
+            groupBy: "$field",
+            boundaries: [options],
+            default: "default option",
+            output: {
+               //count
+               // sum
+               // avg
+               // push
+               // max
+               // min
+            },
+         },
+      },
+   ]);
+   ```
+-  ### `$facet`:
+
+   -  `$facet` stage helps to create multiple pipeline parallely.
+   -  `$facet` get input from one collection or previous stage.
+   -  In `$facet` we can create multiple pipeline.
+   -  For every `$facet` pipeline we can get individual output into an `array.`
+   -  syntax:
+
+   ```ts
+         db.collection.aggregate([
+            // others stage :
+            {
+               $facet: {
+                  pipelineName: [
+                     // stage 1,
+                     // stage 2:
+                  ]
+                  pipelineName: [
+                     // stage 1,
+                     // stage 2:
+                  ]
+                  pipelineName: [
+                     // stage 1,
+                     // stage 2:
+                  ]
                }
             }
-         }
-      ])
+
+         ])
+
    ```
-   
+
+   -  Example:
+
+   ```ts
+   db.test.aggregate([
+      {
+         $facet: {
+            friendsReport: [
+               //stage 1:
+               { $unwind: "$friends" },
+               // stage 2:
+
+               { $group: { _id: "$friends", count: { $count: {} } } },
+            ],
+
+            interestsReport: [
+               // stage 1:
+               { $unwind: "$interests" },
+               // stage 2:
+               { $group: { _id: "$interests", count: { $sum: 1 } } },
+            ],
+            educationCount: [
+               {
+                  // stage 1:
+                  $unwind: "$education",
+               },
+               // stage 2:
+               { $group: { _id: "$education", count: { $count: {} } } },
+            ],
+         },
+      },
+   ]);
+   ```
+
+-  ### `$lookup`:
+   -
