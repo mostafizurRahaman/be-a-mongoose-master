@@ -235,6 +235,7 @@
 
 -  #### `$merge` stage : Merge the `previous stage ` documents with `an existing collection`
 
+   -  merge stage can modify existing collections
    -  syntax :
 
    ```ts
@@ -267,5 +268,67 @@
          },
       },
       { $merge: "test" },
+   ]);
+   ```
+
+-  ### `$group` stage operators:
+
+   -  In group stage we can group data with any specific `fields`
+   -  In Group stage we must provide an `_id` and it's value will `null` or
+      `$fieldName`.
+   -  If we provide `null` , in group we found all documents from collection.
+
+   ```js
+   db.collection.aggregate([
+      // get all data:
+      {
+         $group: { _id: null, total: { $sum: 1 } },
+      },
+      // sum : 1 means calculate documents number in collection.
+   ]);
+   ```
+
+   -  If we provide `$fieldName` the data will be groupe.
+
+   ```js
+   db.collection.aggregate([
+      // create group with $gender fields:
+      // sum : "$salary" calculate the the total salary by adding every document salary
+      {
+         $group: { _id: "$gender", total: { $sum: "$salary" } },
+      },
+   ]);
+   ```
+
+   -  Here we can `count`, `sum`, `average`, `find maximum`,
+      `find minimum `and` push` data on array.
+   -  For complete `$group` operation we can use `$count`, `$sum`, `$min`,
+      `$max`, `$avg` and `$push`
+   -  Example :
+
+   ```ts
+   db.test.aggregate([
+      // stage -> 1:
+      {
+         $group: {
+            _id: null,
+            totalSalary: { $sum: "$salary" },
+            minSalary: { $min: "$salary" },
+            maxSalary: { $max: "$salary" },
+            avgSalary: { $avg: "$salary" },
+            data: { $push: "$$ROOT" },
+         },
+      },
+
+      // stage -> 2:
+      {
+         $project: {
+            totalSalary: 1,
+            minSalary: 1,
+            maxSalary: 1,
+            averageSalary: "$avgSalary", // rename the fields
+            minMaxSalaryRange: { $subtract: ["$maxSalary", "$minSalary"] }, // substract in project
+         },
+      },
    ]);
    ```
