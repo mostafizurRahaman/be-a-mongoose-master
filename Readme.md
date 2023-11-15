@@ -336,3 +336,92 @@ db.test
       }
    );
    ```
+
+## `Indexing` in MongoDB:
+
+-  ###### `COLLSCAN` or `full collection scan` : In this way , there are no `index` exists. so mongoDB need to scan full collection and find the documents.
+-  ###### `IXSCAN` or `Index SCAN`: In this way mongoDB has some specified `index` for this collection. By using that `index` field we can search. And then we found our data or documents in few seconds and more faster.
+
+## There are different types of index depend on field number or type:-
+
+-  ### Single Field Index:
+
+   -  get only one field for indexing.
+   -  ##### create single index:
+
+   ```ts
+      db.collection.createIndex({fieldName: 1 or -1})
+      // here give 1 for ascending
+      // here five -1 for descending way
+   ```
+
+-  ### Compound Index:
+
+   -  If we create index with multiple fields, it's known as compound fields.
+   -  syntax:
+
+   ```ts
+      db.collection.createIndex({
+         <field>: <sort order>,
+         <field>: <sort order>,
+      }, {name: <index Name>})
+   ```
+
+   -  Example:
+
+   ```ts
+   db.massivedata.createIndex({ gender: -1, age: 1 }, { name: "gender_age" });
+   ```
+
+-  ### Text Index: text index helps us to search easily by using any partial text.
+   -  syntax:
+   ```ts
+      db.collection.createIndex({<field>: "text"})
+   ```
+   -  Example:
+   ```ts
+   db.messivedata.createIndex({ about: "text" }, { name: "about_index" });
+   ```
+
+## Index Operations:
+
+-  ### Create index:
+
+   -  here `1` for ascending order
+   -  here `-1` for descending order
+   -  syntax:
+
+   ```ts
+   db.<collection>.createIndex(
+   { <field>: <value> },
+   { name: "<indexName>" }
+   )
+   ```
+
+-  ### Create Compound Index:
+   -  syntax:
+   ```ts
+      db.<collection>.createIndex( {
+               <field1>: <sortOrder>,
+               <field2>: <sortOrder>,
+               ...
+               <fieldN>: <sortOrder>
+               } )
+   ```
+-  ### Drop Index :
+
+   -  syntax:
+
+   ```ts
+   db.collection.drop("indexName");
+   ```
+
+-  ## Get Indexes :
+   ```ts
+   db.collection.getIndexes();
+   ```
+-  ### Explain Indexing Stats:
+   -  syntax:
+   ```ts
+   db.collection.find({}).explain("executionStats");
+   ```
