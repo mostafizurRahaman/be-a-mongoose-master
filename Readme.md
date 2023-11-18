@@ -299,3 +299,15 @@ end
    A[Interfaces] --> B[Schema] --> C[Model]--> D[Database Query]
 
 ```
+
+## Request & Response Flow in `Modular Pattern :`
+
+```mermaid
+   graph TD
+
+   A[Client]--request-->B[Route]--request-->C[Controller]--request-->D[Services] --request-->E{Database}
+
+   E --response-->D
+   D --response-->C
+   C --response {success, message, data}-->A
+```

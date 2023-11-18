@@ -1,4 +1,8 @@
-import { LocalGuardian } from './student.interface';
+export type UserName = {
+  firstName: string
+  lastName: string
+  middleName: string
+}
 export type Guardian = {
   fatherName: string
   fatherOccupation: string
@@ -6,12 +10,6 @@ export type Guardian = {
   motherName: string
   motherOccupation: string
   motherContactNo: string
-}
-
-export type UserName = {
-  firstName: string
-  lastName: string
-  middleName: string
 }
 
 export type LocalGuardian = {
@@ -32,5 +30,7 @@ export type Student = {
   presentAddress: string
   permanentAddress: string
   guardian: Guardian
-  localGuardian: LocalGuardian, 
+  localGuardian: LocalGuardian
+  profileImg: string
+  isActive: 'active' | 'blocked'
 }
