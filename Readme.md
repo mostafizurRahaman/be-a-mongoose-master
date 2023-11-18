@@ -1,243 +1,301 @@
-# Express JS :
+# Mongoose
 
-## What is express js?
+## What is mongoose ?
 
--  🎗️ Express js is a Fast, unopinionated and minimalist web framework for Node
-   JS
--  🎗️ Express js is a Fast, unopinionated and minimalist web framework for Node
-   JS
+-  Mongoose is an Object Data Modeling library for mongodb.
 
-## Install Express JS :
+## Why we use mongoose?
 
--  ```js
-    npm i express
-   ```
--  ```js
-    yarn add express
-   ```
+-  Schema Definition
+-  Model Creation
+-  Data validation
+-  Querying
+-  middleware support
+-  population .
 
-## Install TypeScript as Dev Dependencies:
+## Some Common Package that we need:
 
--  🎗️ npm
+-  express
+-  typescript
+-  cors
+-  mongoose
+-  dotenv
+-  eslint
+-  prettier
+-  ts-node-dev
 
-```ts
-   npm i  -D typescript
+## Folder structure:
+
+```$tree/md
+    $ Express Js Folder structure
+.
+├── node_modules
+│
+├── dist/
+├── src/
+│   ├── app/
+│   ├── app.ts
+│   ├── server.ts
+│   ├── config/
+│           ├─index.ts
+├── package.json
+├── tsconfig.json
+├── .gitignore
+├── .env
+└── README.md
+      ...
 ```
 
--  🎗️ yarn
+### Get Current Path:
+
+-  1st way :
 
 ```ts
-   yarn add -D typescript
+process.cwd();
 ```
 
--  ### Install `@types/express` for `express`:
+-  2nd way:
 
-   -  🤷‍♂️ yarn:
+```ts
+__dirname;
+```
 
-   ```ts
-      yarn add -D @types/express
-   ```
+## Configure `dotenv` :
 
-   -  🤷‍♂️ npm:
+-  create :file_folder:`configs` at `src/app/`.
+-  create create a `index.ts` file :
+-  write codes:
 
-   ```ts
-      npm i -D @types/express
-   ```
+```ts
+import dotenv from "dotenv";
+import path from "path";
 
--  ### Install `@types/node` for `node`:
+// dotenv setup with process.cwd() :
+dotenv.config({ path: path.join(process.cwd() + ".env") });
+// console.log(process.cwd() + ".env");
 
-   -  🤷‍♂️ yarn:
+export = {
+   port: process.env.PORT,
+   database_url: process.env.DATABASE_URI,
+};
+```
 
-   ```ts
-      yarn add -D @types/node
-   ```
+## Install & setup Eslint & Prettier :
 
-   -  🤷‍♂️ npm:
+-  #### [read this blog](https://blog.logrocket.com/linting-typescript-eslint-prettier)
+-  run this command :
 
-   ```ts
-      npm i -D @types/node
-   ```
+```ts
+   npm install eslint @typescript-eslint/parser @typescript-eslint/eslint-plugin --save-dev
+   // install this packages as dev dependencies:
+   // eslint
+   // @typescript-eslint/parser
+   // @typescript-eslint/eslint-plugin
+```
 
-## Create a Simple Server with Express JS and TypeScript :
+-  ### Initialize Eslint or create Eslint configuration:
 
--  ## create a src folder: In Src folder create `app.ts` and `server.ts`
-
-   ```ts
-   // app.ts code :
-   import express, { Request, Response } from "express";
-   const app = express();
-
-   app.get("/", (req: Request, res: Response) => {
-      res.status(200).send({
-         message: "Yah!!! Learning server is running now ",
-      });
-   });
-
-   export default app;
-   ```
+   -  it's provide an configuration. `.eslintrc.json` file
+   -  run the command :
 
    ```ts
-   // server.ts code :
-   import { Server } from "http";
-   import app from "./app";
-   const PORT = 5000;
-   let server: Server;
-
-   async function bootstrap() {
-      server = app.listen(5000, () => {
-         console.log(`Server is running on port ${PORT}`);
-      });
-   }
-
-   bootstrap();
+        npx eslint --init
    ```
 
-### Learn Express Parser:
+   -  ##### Then ans the belows question on terminal step by step :
 
-|                 name                 |                  why use                  |          example          |
-| :----------------------------------: | :---------------------------------------: | :-----------------------: |
-|           `express.json()`           | use to parse `application/json` type data | `app.use(express.json())` |
-|           `express.text()`           |    use to parse `text/plain` type data    | `app.use(express.json())` |
-| `express.static(__dirname + public)` |    use to parse `text/plain` type data    | `app.use(express.json())` |
+   ```ts
+      How would you like to use ESLint?
+      What type of modules does your project use?
+      Which framework does your project use?
+      Does your project use TypeScript?
+      Where does your code run?
+      How would you like to define a style for your project?
+   ```
 
-# :wave: Middleware :
+   -  create an `.eslintignore` file and `dist` and `node_modules`
 
--  An Express Application is an essentialy series of middleware functions calls.
--  ## :point_right: What is middleware :
+   ```eslint
+   dist
+   node_modules
+   ```
 
-   -  A middleware is a function.
-   -  ##### :point_right: Middleware has access of three things
-      -  request object(req)
-      -  response object(res)
-      -  the next middleware function. (next())
-   -  ##### :point_right: A middleware function can do
-      -  send response directly (সরাসরি রেসপন্স পাঠাতে পারে )
-      -  after completing task call the next middleware on stack. (অথবা next()
-         কে কল করে দিবে পরবর্তী middleware কে কাজ করার জন্য )
-   -  ##### :point_right: Generally we store our middleware file in middleware folder.
-      -  create a :file_folder:`middleware` on `root folder`.
-      -  create a ":page_with_curl:`file.js` for middleware file.
-      -  write a function with three parameters `(req, res, next)`.
+   -  ##### Add Two script: `package.json`
 
--  ## :point_right: There are five types of middleware in Express JS.
+   ```json
+         "scripts": {
+               "lint": "eslint src --ignore-path .eslintignore --ext  .ts",
+               "lint:fix": "npx eslint src --fix"
+          },
+   ```
 
-   -  ### :point_right: Build In Middleware: like `express.json()`.
+   -  ##### Add some rules : in `.eslintrc.json`
 
-      -  `express.json()` helps to receive `json data` from `req.body`;
-      -  Build in middleware will be use with `app.use(middleware)` parameter
-         before routes and database connection
-      -  Example:
+   ```json
+      "rules": {
+         "/no-unused-vars": "error",
+         "no-unused-expressions": "error",
+         "prefer-const": "error",
+         "no-undef": "error",
+         "no-console": "warn"
+      },
 
-      ```js
-      app.use(express.json());
-      ```
 
-   -  ### :point_right: Application Label Middleware :
+   ```
 
-      -  Create a :page_with_curl:`file.js` for middleware.
-      -  Create a `function` with three parameters `(req, res, next)`.
-      -  A middleware function must `return` neither `response to client` or
-         call the `next()` function
-      -  then write `function codes ` and `export ` the function.
+   -  ##### Add Globals
 
-         ```js
-         // the middleware counts applications every request
-         let counter = 0;
-         const viewCount = (req, res, next) => {
-            counter++;
-            console.log(counter);
-            // res.send(" i send data "); // send the resposne directly
-            next(); // call the next middleware:
-         };
-
-         module.exports = viewCount;
-         ```
-
-      -  to use the middleware just pass as parameter of
-         `app.use(middlewareFunc)`.
-      -  Application Label middleware function must call before
-         `database connection` and `api routes`
-      -  Example:
-
-         ```js
-         const viewCount = require("./middleware/viewCount/");
-
-         app.use(viewCount);
-         ```
-
-   -  ### :point_right: Router Level Middleware :
-      -  Router level middleware creation process like
-         `Application level middleware`
-      -  ### :point_right: how to use router level middleware?
-      -  `pass` the middleware as parameter of `router.method()` before
-         `controller function`.
-      -  Example : -
-      ```js
-      router.get("/", viewCount, handleProduct.getProducts);
-      ```
-   -  ### :point_right: Third Partty Middleware:
-
-      -  Third Partty pacakage provide some middleware.
-      -  we can use `third party middleware` as `application level middleware`
-         call the `middleware` in `app.use(middleware())`
-      -  Example:
-
-      ```js
-      const { default: rateLimit } = require("express-rate-limit");
-
-      const limiter = rateLimit({
-         windowMs: 15 * 60 * 1000, // 15 minutes
-         limit: 3, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-         standardHeaders: "draft-7", // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
-         legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-         // store: ... , // Use an external store for more precise rate limiting
-      });
-
-      app.use(limiter);
-      ```
-
-      -  create middleware function on into middleware folder:
-
-      ```js
-      const { default: rateLimit } = require("express-rate-limit");
-
-      const limiter = rateLimit({
-         windowMs: 15 * 60 * 1000, // 15 minutes
-         limit: 3, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
-         standardHeaders: "draft-7", // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
-         legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-         // store: ... , // Use an external store for more precise rate limiting
-      });
-
-      module.exports = limiter;
-      ```
-
-      -  We can use `third party middleware` as `router level middleware` by
-         call the middleware before `controller function` of
-         `rotuer.method(middleware, contorller_func)`
-      -  Example:
-
-      ```js
-      router.get("/", viewCount, limiter, handleProduct.getProducts);
-      ```
-
-   -  ### :point_right: ERROR Handling Middleware:
-
-      -  error handle middleware accept an extra parameter err.
-      -  syntax:
-
-      ```ts
-      function ErrorHandler(err, req, res, next) {
-         console.log(err.message, err.name, err.stack);
-         res.status(500).send({
-            message: err.message,
-            name: err.name,
-         });
+   ```json
+    "globals": {
+         "process": "readonly"
       }
-      ```
+   ```
 
+   -  ##### Edit extends In `.eslintrc.json` : This helps to save from conflict of prettier and eslint.
 
+   ```json
+     "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+   ],
+   ```
 
+## Install Prettier :
 
+-  ### Installation:
+   ```ts
+      npm install --save-dev prettier
+   ```
+-  ### Create `.prettierrc.json` and this file:
 
-## Route Management In Express JS : 
+   ```json
+   {
+      "semi": false, // Specify if you want to print semicolons at the end of statements
+      "singleQuote": true // If you want to use single quotes
+   }
+   ```
+
+-  ### Install and `two script` on `package.json` for prettier:
+   -  to Format with prettier:
+   ```json
+      "prettier" : "prettier --ignore-path .gitignore --write \"./src/**/*.+(js|ts|json)\",
+      "prettier:fix" : "npx prettier --write src"
+   ```
+-  ### Install another `eslint-config-prettier` to handle eslint and prettier
+   conflict.
+   ```ts
+      npm install --save-dev eslint-config-prettier
+   ```
+-  ### Edit extends In `.eslintrc.json` : This helps to save from conflict of prettier and eslint.
+
+   ```json
+     "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
+   ],
+   ```
+
+## Install `ts-node-dev` to run `server.ts`:
+
+-  ### install :
+   ```ts
+      npm i ts-node-dev --save-dev
+   ```
+-  ### Add an script on `package.json` :
+
+   ```json
+      "start:dev": "ts-node-dev --respawn --transpile-only ./src/server.ts"
+
+   ```
+
+## Software Design Pattern
+
+-  There many software design pattern like `mvc` and `modular` pattern
+-  ### MVC Pattern :
+
+```mermaid
+ graph TD
+
+ A[Interface Folder]-->B[Contain all interfaces]
+
+ C[model Folder] --> D[contain all models]
+
+ E[services Folder]-->F[contain all services]
+
+ G[Routes Folder]-->H[contain all Routes]
+
+ J[Folder Controllers]-->I[contain all Controllers]
+```
+
+-  ### Modular Pattern :
+
+```mermaid
+graph TD
+subgraph A[Student Folder]
+   subgraph B[interface]
+      subgraph C[model]
+         subgraph D[route]
+             subgraph E[controllers]
+                F[services]
+             end
+         end
+      end
+   end
+end
+
+```
+
+```mermaid
+graph TD
+subgraph A[Teacher Folder]
+   subgraph B[interface]
+      subgraph C[model]
+         subgraph D[route]
+             subgraph E[controllers]
+                F[services]
+             end
+         end
+      end
+   end
+end
+
+```
+
+```mermaid
+graph TD
+subgraph A[Marks Folder]
+   subgraph B[interface]
+      subgraph C[model]
+         subgraph D[route]
+             subgraph E[controllers]
+                F[services]
+             end
+         end
+      end
+   end
+end
+
+```
+
+## Benefits of Modular Pattern:
+
+1. Scalability
+2. Maintainability
+3. Better Refactoring
+4. Efficient Development
+
+## Follow rules :
+
+-  #### Dry : Don't Repeat Your Code
+-  #### FAT Model / Thin Controller
+
+## We follow the rules on our express application :
+
+```mermaid
+   graph TD
+
+   A[Interfaces] --> B[Schema] --> C[Model]--> D[Database Query]
+
+```
