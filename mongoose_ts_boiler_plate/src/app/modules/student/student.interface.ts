@@ -1,8 +1,9 @@
 export type UserName = {
   firstName: string
+  middleName?: string
   lastName: string
-  middleName: string
 }
+
 export type Guardian = {
   fatherName: string
   fatherOccupation: string
@@ -18,6 +19,7 @@ export type LocalGuardian = {
   contactNo: string
   address: string
 }
+
 export type Student = {
   id: string
   name: UserName
@@ -26,7 +28,7 @@ export type Student = {
   email: string
   contactNo: string
   emergencyContactNo: string
-  bloodGroup?: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-'
+  bloodGroup: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-'
   presentAddress: string
   permanentAddress: string
   guardian: Guardian

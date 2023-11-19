@@ -1,8 +1,12 @@
 import { Schema, model } from 'mongoose'
 import { Guardian, LocalGuardian, Student, UserName } from './student.interface'
 
-const userNameSchema = new Schema<UserName>({
+const UserSchema = new Schema<UserName>({
   firstName: {
+    type: String,
+    required: true,
+  },
+  middleName: {
     type: String,
     required: true,
   },
@@ -10,7 +14,6 @@ const userNameSchema = new Schema<UserName>({
     type: String,
     required: true,
   },
-  middleName: String,
 })
 
 const GuardianSchema = new Schema<Guardian>({
@@ -18,11 +21,11 @@ const GuardianSchema = new Schema<Guardian>({
     type: String,
     required: true,
   },
-  fatherOccupation: {
+  fatherContactNo: {
     type: String,
     required: true,
   },
-  fatherContactNo: {
+  fatherOccupation: {
     type: String,
     required: true,
   },
@@ -30,17 +33,17 @@ const GuardianSchema = new Schema<Guardian>({
     type: String,
     required: true,
   },
-  motherOccupation: {
+  motherContactNo: {
     type: String,
     required: true,
   },
-  motherContactNo: {
+  motherOccupation: {
     type: String,
     required: true,
   },
 })
 
-const localSchema = new Schema<LocalGuardian>({
+const LocalGuardianSchema = new Schema<LocalGuardian>({
   name: {
     type: String,
     required: true,
@@ -58,17 +61,17 @@ const localSchema = new Schema<LocalGuardian>({
     required: true,
   },
 })
-
 const studentSchema = new Schema<Student>({
   id: {
     type: String,
+    required: true,
   },
-  name: userNameSchema,
+  name: UserSchema,
   gender: ['male', 'female'],
   dateOfBirth: {
     type: String,
-    required: true,
   },
+  bloodGroup: ['A+', 'A-', 'AB+', 'AB-', 'B+', 'B-', 'O+', 'O-'],
   email: {
     type: String,
     required: true,
@@ -77,12 +80,10 @@ const studentSchema = new Schema<Student>({
     type: String,
     required: true,
   },
-
   emergencyContactNo: {
     type: String,
     required: true,
   },
-  bloodGroup: ['A+', 'A-', 'AB+', 'AB-', 'B+', 'B-', 'O+', 'O-'],
   presentAddress: {
     type: String,
     required: true,
@@ -92,11 +93,14 @@ const studentSchema = new Schema<Student>({
     required: true,
   },
   guardian: GuardianSchema,
-  localGuardian: localSchema,
-  profileImg: { type: String },
+  localGuardian: LocalGuardianSchema,
+  profileImg: {
+    type: String,
+    required: true,
+  },
   isActive: ['active', 'blocked'],
 })
 
-// create a model:
+const StudentModel = model<Student>('Student', studentSchema)
 
-const Student = model<Student>('Student', studentSchema)
+export default StudentModel
