@@ -1,28 +1,24 @@
-import express, { Application, Request, Response } from 'express'
-import cors from 'cors'
-import { StudentRoutes } from './app/modules/student/student.route'
+import express, { Application, Request, Response } from 'express';
+import cors from 'cors';
+import { StudentRoutes } from './app/modules/student/student.route';
+import { UserRouter } from './app/modules/user/user.route';
 
 // create application :
-const app: Application = express()
+const app: Application = express();
 
 // parsers :
-app.use(express.json())
-app.use(cors())
+app.use(express.json());
+app.use(cors());
 
 // application routes:
 
-app.use('/api/v1/students', StudentRoutes)
-
+app.use('/api/v1/students', StudentRoutes);
+app.use('/api/v1/users', UserRouter);
 // main route:
 app.get('/', (req: Request, res: Response) => {
-  const a = 20
-
-  console.log(a)
-  console.log(a)
-
-  res.send('Yah!!! our server is running now.......')
-})
+  res.send('Yah!!! our server is running now.......');
+});
 
 // export :
 
-export default app
+export default app;

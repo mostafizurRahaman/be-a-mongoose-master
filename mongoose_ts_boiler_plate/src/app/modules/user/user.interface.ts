@@ -20,15 +20,15 @@ export type LocalGuardian = {
   address: string;
 };
 
-export type Student = {
+export type UserInfo = {
   id: string;
   name: UserName;
-  gender: 'male' | 'female';
-  dateOfBirth?: string;
+  gender: 'male' | 'female' | 'other';
+  bloodGroup: 'A+' | 'A-' | 'B+' | 'B-' | 'O+' | 'O-' | 'AB+' | 'AB-';
   email: string;
+  dateOfBirth?: string;
   contactNo: string;
   emergencyContactNo: string;
-  bloodGroup: 'A+' | 'A-' | 'B+' | 'B-' | 'AB+' | 'AB-' | 'O+' | 'O-';
   presentAddress: string;
   permanentAddress: string;
   guardian: Guardian;
