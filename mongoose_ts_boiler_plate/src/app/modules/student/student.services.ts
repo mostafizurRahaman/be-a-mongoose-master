@@ -1,4 +1,3 @@
-import { TStudent } from './student.interface';
 import Student from './student.model';
 
 // const createStudentIntoDB = async (studentData: TStudent) => {
@@ -26,8 +25,8 @@ import Student from './student.model';
 
 // get students:
 const getAllStudentFromDB = async () => {
-  const students = await Student.find();
-
+  const students = await Student.find({});
+  
   return students;
 };
 

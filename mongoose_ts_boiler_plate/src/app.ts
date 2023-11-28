@@ -2,7 +2,8 @@ import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import { StudentRoutes } from './app/modules/student/student.route';
 import { userRouter } from './app/modules/user/user.route';
-
+import  globalErrorHandler  from './app/middlewares/globalErrorHandler';
+import { notFound } from './app/middlewares/notFound';
 
 // create application :
 const app: Application = express();
@@ -19,6 +20,12 @@ app.use('/api/v1/users', userRouter);
 app.get('/', (req: Request, res: Response) => {
   res.send('Yah!!! our server is running now.......');
 });
+
+// global Error Handler:
+app.use(globalErrorHandler);
+
+// notFound:
+app.use(notFound);
 
 // export :
 

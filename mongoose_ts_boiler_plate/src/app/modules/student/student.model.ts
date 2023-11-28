@@ -8,8 +8,7 @@ import {
   // TStudentModel,
   TUserName,
 } from './student.interface';
-import bcrypt from 'bcrypt';
-import configs from '../../configs';
+
 // import validator from 'validator'
 const UserSchema = new Schema<TUserName>({
   firstName: {
@@ -209,7 +208,7 @@ studentSchema.statics.isUserExists = async function (id: string) {
 // pre hook for query middleware:
 studentSchema.pre('find', async function (next) {
   // write query:
-  this.find({ isDeleted: { $eq: true } });
+  this.find({ isDeleted: { $ne: true } });
   next();
 });
 
@@ -217,7 +216,6 @@ studentSchema.pre('find', async function (next) {
 
 studentSchema.pre('findOne', async function (next) {
   this.findOne({ isDeleted: { $ne: true } });
-
   next();
 });
 
