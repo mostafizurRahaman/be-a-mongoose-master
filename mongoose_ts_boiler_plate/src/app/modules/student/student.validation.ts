@@ -24,6 +24,7 @@ const userValidationSchema = Joi.object({
 
 const studentValidationSchema = Joi.object({
   id: Joi.string().trim().required(),
+  password: Joi.string().trim().required(),
   name: userValidationSchema.required(),
   gender: Joi.string().valid('male', 'female', 'other').required(),
   dateOfBirth: Joi.string(),

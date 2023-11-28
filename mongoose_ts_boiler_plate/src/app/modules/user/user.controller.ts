@@ -1,39 +1,32 @@
 import { Request, Response } from 'express';
 import { UserServices } from './user.services';
-import UserValidationSchema from './user.validation';
 
-const createUser = async (req: Request, res: Response) => {
+const createStudent = async (req: Request, res: Response) => {
   try {
-    const { user } = req.body;
+    const { password, student: studentData } = req.body;
 
-    const { error, value } = UserValidationSchema.validate(user);
+    const student = await UserServices.createStudentIntoDB(
+      password,
+      studentData,
+    );
 
-    if (error) {
-      return res.status(500).json({
-        success: false,
-        message: 'something went wrong',
-        error: error.details,
-      });
-    }
+    console.log(student);
 
-    // call the func of services :
-    const result = await UserServices.createUserIntoDB(value);
-
-    // send res:
+    // send  res:
     res.status(200).send({
       success: true,
-      message: 'User Created successfully',
-      data: result,
+      message: 'Student is created successfully',
+      data: student,
     });
-  } catch (err) {
-    return res.status(500).json({
+  } catch (err: any) {
+    res.status(500).send({
       success: false,
-      message: 'something went wrong',
+      message: err.message,
       error: err,
     });
   }
 };
 
-export const UserController = {
-  createUser,
+export const UserControllers = {
+  createStudent,
 };
