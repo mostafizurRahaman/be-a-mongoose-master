@@ -1,32 +1,25 @@
-import { NextFunction, Request, Response } from 'express';
+import { RequestHandler, NextFunction, Request, Response } from 'express';
 import { StudentServices } from './student.services';
 import httpStatus from 'http-status';
 import sendResponse from '../../utils/sendResponse';
 
-const getAllStudents = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const students = await StudentServices.getAllStudentFromDB();
-
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Student retrieved successfully',
-      data: students,
-    });
-  } catch (err) {
-    next(err);
-  }
+const catchAsync = (fn: RequestHandler) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    return Promise.resolve(fn(req, res, next)).catch((err) => next(err));
+  };
 };
 
-const getStudentById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const getAllStudents: RequestHandler = catchAsync(async (req, res, next) => {
+  const students = await StudentServices.getAllStudentFromDB();
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Student retrieved successfully',
+    data: students,
+  });
+});
+
+const getStudentById: RequestHandler = async (req, res, next) => {
   try {
     // get  id:
     const { studentId } = req.params;
@@ -44,11 +37,7 @@ const getStudentById = async (
   }
 };
 
-const deleteStudentById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const deleteStudentById: RequestHandler = async (req, res, next) => {
   try {
     const { studentId } = req.params;
 
@@ -66,11 +55,7 @@ const deleteStudentById = async (
 };
 
 // get student with Aggregation :
-const getStudentsWithAggregation = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
+const getStudentsWithAggregation: RequestHandler = async (req, res, next) => {
   try {
     const result = await StudentServices.getAllStudentFromDBWithAggregation();
     sendResponse(res, {
